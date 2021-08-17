@@ -21,21 +21,43 @@ def text_detect(img,ele_size=(8,2)): #
     RectP = [(int(i[0]-i[2]*0.08),int(i[1]-i[3]*0.08),int(i[0]+i[2]*1.1),int(i[1]+i[3]*1.1)) for i in Rect]
     return RectP
 
-def x_main(rect, _, __):
+def get_leftColumn(rect):
     leftColumn = [i for i in filter(lambda i : i[2] < 180, rect)]
     leftColumn.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    return leftColumn
+
+def get_rightColumn(rect):
+    rightColumn = [i for i in filter(lambda i : i[0] > 1880, rect)]
+    rightColumn.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    return rightColumn
+
+def get_midRow(rect):
+    midRow = [i for i in filter(lambda i : i[1] > 1000 and i[1] < 1250 and i[0] > 600 and i[2] < 1400, rect)]
+    midRow.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    return midRow
+
+def x_main(rect, _, __):
+    leftColumn = get_leftColumn(rect)
     print([i for i in leftColumn][5])
 
 def new_address(rect, _, __):
-    rightColumn = [i for i in filter(lambda i : i[0] > 1880, rect)]
-    rightColumn.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    rightColumn = get_rightColumn(rect)
     print([i for i in rightColumn][13])
     print([i for i in rightColumn][15])
 
 def startup(rect, _, __):
-    midRow = [i for i in filter(lambda i : i[1] > 1000 and i[1] < 1250 and i[2] < 1400, rect)]
-    midRow.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    midRow = get_midRow(rect)
     print([i for i in midRow][4])
+
+def squint(rect, _, __):
+    leftColumn = get_leftColumn(rect)
+    midRow = get_midRow(rect)
+    if (len(leftColumn) == 0):
+        print("startup")
+    elif (len(midRow) == 0):
+        print("main")
+    else:
+        print("wallet")
 
 def default(rect, img, outputFile):
     for i in rect:
@@ -50,6 +72,7 @@ def main(inputFile, which):
       "--main": "x_main",
       "--new-address": "new_address",
       "--startup": "startup",
+      "--squint": "squint",
     }
     func = switcher.get(which, "default")
     eval("%s(rect, img, outputFile)" % func)
