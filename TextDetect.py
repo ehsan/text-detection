@@ -37,17 +37,20 @@ def get_midRow(rect):
     return midRow
 
 def x_main(rect, _, __):
-    leftColumn = get_leftColumn(rect)
-    print([i for i in leftColumn][5])
+    leftColumn = [i for i in get_leftColumn(rect)]
+    if (len(leftColumn) > 5):
+        print(leftColumn[5])
 
 def new_address(rect, _, __):
-    rightColumn = get_rightColumn(rect)
-    print([i for i in rightColumn][13])
-    print([i for i in rightColumn][15])
+    rightColumn = [i for i in get_rightColumn(rect)]
+    if (len(rightColumn) > 15):
+        print(rightColumn[13])
+        print(rightColumn[15])
 
 def startup(rect, _, __):
-    midRow = get_midRow(rect)
-    print([i for i in midRow][4])
+    midRow = [i for i in get_midRow(rect)]
+    if (len(midRow) > 4):
+        print(midRow[4])
 
 def squint(rect, _, __):
     leftColumn = get_leftColumn(rect)
