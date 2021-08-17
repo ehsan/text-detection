@@ -21,15 +21,38 @@ def text_detect(img,ele_size=(8,2)): #
     RectP = [(int(i[0]-i[2]*0.08),int(i[1]-i[3]*0.08),int(i[0]+i[2]*1.1),int(i[1]+i[3]*1.1)) for i in Rect]
     return RectP
 
+def x_main(rect, _, __):
+    leftColumn = [i for i in filter(lambda i : i[2] < 180, rect)]
+    leftColumn.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    print([i for i in leftColumn][5])
 
-def main(inputFile):
-    outputFile = inputFile.split('.')[0]+'-rect.'+'.'.join(inputFile.split('.')[1:])
-    print(outputFile)
-    img = cv2.imread(inputFile)
-    rect = text_detect(img)
+def new_address(rect, _, __):
+    rightColumn = [i for i in filter(lambda i : i[0] > 1880, rect)]
+    rightColumn.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    print([i for i in rightColumn][13])
+    print([i for i in rightColumn][15])
+
+def startup(rect, _, __):
+    midRow = [i for i in filter(lambda i : i[1] > 1000 and i[1] < 1250 and i[2] < 1400, rect)]
+    midRow.sort(key=lambda i : (i[1], i[0]), reverse=False)
+    print([i for i in midRow][4])
+
+def default(rect, img, outputFile):
     for i in rect:
         cv2.rectangle(img,i[:2],i[2:],(0,0,255))
     cv2.imwrite(outputFile, img)
 
+def main(inputFile, which):
+    outputFile = inputFile.split('.')[0]+'-rect.'+'.'.join(inputFile.split('.')[1:])
+    img = cv2.imread(inputFile)
+    rect = text_detect(img,(12,4))
+    switcher = {
+      "--main": "x_main",
+      "--new-address": "new_address",
+      "--startup": "startup",
+    }
+    func = switcher.get(which, "default")
+    eval("%s(rect, img, outputFile)" % func)
+
 if __name__ == '__main__':
-    main(sys.argv[1])
+    main(sys.argv[1], sys.argv[2] if len(sys.argv) >= 3 else '')
