@@ -27,7 +27,7 @@ def get_leftColumn(rect):
     return leftColumn
 
 def get_rightColumn(rect):
-    rightColumn = [i for i in filter(lambda i : i[0] > 1880, rect)]
+    rightColumn = [i for i in filter(lambda i : i[0] > 1880 and i[1] > 1500 and i[1] < 1800, rect)]
     rightColumn.sort(key=lambda i : (i[1], i[0]), reverse=False)
     return rightColumn
 
@@ -43,9 +43,9 @@ def x_main(rect, _, __):
 
 def new_address(rect, _, __):
     rightColumn = [i for i in get_rightColumn(rect)]
-    if (len(rightColumn) > 15):
-        print(rightColumn[13])
-        print(rightColumn[15])
+    if (len(rightColumn) > 2):
+        print(rightColumn[-2])
+        print(rightColumn[-1])
 
 def startup(rect, _, __):
     midRow = [i for i in get_midRow(rect)]
